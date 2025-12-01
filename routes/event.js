@@ -121,9 +121,13 @@ router.get("/event-window/:first/:last", async (req, res) => {
 router.put("/event-update/:id", async (req, res) => {
   try {
     let id = req.params.id;
-    let update = "www.dance.com";
-    let data = [update, id];
-    let SQL = "UPDATE events SET RegistrationLink = ? WHERE EventId = ?";
+    let { Title, Details, OnDate, Venue, RegistrationLink } = req.body;
+    if (!Title || !Details || !Venue || !OnDate || !RegistrationLink) {
+      throw new Error("Mandatory field are not there");
+    }
+    const data = [Title, Details, OnDate, Venue, RegistrationLink, id];
+    let SQL =
+      "UPDATE events SET Title = ?, Details = ?, OnDate = ?, Venue = ?, RegistrationLink = ? WHERE EventId = ?";
     const result = await sqlPromise(SQL, data);
     console.log("Updated data");
     res.status(200).json({
